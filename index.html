@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <!--
+    If you are serving your web app in a path other than the root, change the
+    href value below to reflect the base path you are serving from.
+
+    The path provided below has to start and end with a slash "/" in order for
+    it to work correctly.
+
+    For more details:
+    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+
+    This is a placeholder for base href that will be replaced by the value of
+    the `--base-href` argument provided to `flutter build`.
+  -->
+  <base href="/web/">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A new Flutter project.">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="DistroNote">
+  <link rel="apple-touch-icon" href="assets/icons/distronote_logo.png">
+
+  <!-- Favicon -->
+  <!-- Use Flutter asset as favicon during development -->
+  <link rel="icon" type="image/png" href="assets/icons/distronote_logo.png"/>
+
+  <title>DistroNote</title>
+  <link rel="manifest" href="manifest.json">
+  <script>
+    (function () {
+      const isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+      if (!isLocal) return;
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then((regs) => {
+          for (const reg of regs) {
+            reg.unregister().catch(() => {});
+          }
+        }).catch(() => {});
+      }
+      if (window.caches) {
+        caches.keys().then((keys) => {
+          for (const key of keys) {
+            caches.delete(key).catch(() => {});
+          }
+        }).catch(() => {});
+      }
+    })();
+  </script>
+  <style>
+    /* Anti-blank: pastikan root langsung berwarna saat first paint */
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: #000; /* gunakan warna brand gelap agar tidak ada flash putih */
+    }
+
+    /* Splash full-screen */
+    .loading-container {
+      position: fixed;
+      inset: 0; /* top:0; right:0; bottom:0; left:0 */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.5); /* konsisten dengan tema Flutter */
+      z-index: 9999;
+    }
+
+    .loading-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 300px;
+      box-sizing: border-box;
+    }
+
+    .hourglass {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: rotate 1.5s linear infinite;
+    }
+    .hourglass svg {
+      width: 48px;
+      height: 48px;
+    }
+    @keyframes rotate {
+      0%   { transform: rotate(0deg); }
+      100% { transform: rotate(180deg); }
+    }
+
+    .loading-text {
+      margin-top: 16px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell,
+                   Noto Sans, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      font-size: 18px;
+      font-weight: 500;
+      color: #333;
+      text-align: center;
+    }
+
+
+    /* Fade-out halus saat Flutter siap */
+    .fade-out {
+      opacity: 0;
+      transition: opacity .2s ease;
+    }
+  </style>
+</head>
+<body>
+  <div class="loading-container" id="loading">
+    <div class="loading-card">
+      <div class="hourglass">
+        <!-- Material Icons hourglass_empty SVG -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#1976d2" role="img" aria-label="Loading">
+          <path d="M6 2v6h.01L6 8.01 10 12l-4 4 .01.01H6V22h12v-5.99h-.01L18 16l-4-4 4-3.99-.01-.01H18V2H6zm10 14.5V20H8v-3.5l4-4 4 4zm-4-5l-4-4V4h8v3.5l-4 4z"/>
+        </svg>
+      </div>
+      <div class="loading-text">Menyiapkan aplikasi...</div>
+    </div>
+  </div>
+
+  <noscript>
+    <style>
+      .loading-container { display: none !important; }
+      .no-js {
+        color: #fff; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial;
+        display:flex; align-items:center; justify-content:center; height:100vh; text-align:center; padding:16px;
+      }
+    </style>
+    <div class="no-js">
+      JavaScript dinonaktifkan. Aktifkan JavaScript untuk menjalankan aplikasi ini.
+    </div>
+  </noscript>
+
+  <script>
+    (function () {
+      const hideSplash = () => {
+        const el = document.getElementById('loading');
+        if (!el) return;
+        el.classList.add('fade-out');
+        setTimeout(() => { try { el.remove(); } catch (_) { el.style.display = 'none'; } }, 220);
+      };
+
+      // Event resmi dari Flutter web saat frame pertama siap
+      window.addEventListener('flutter-first-frame', hideSplash);
+
+      // Fallback: micro-kick untuk mempercepat render elemen splash
+      setTimeout(() => {
+        const el = document.getElementById('loading');
+        if (el) { el.style.opacity = '0.999'; }
+      }, 150);
+
+      // Fallback: sembunyikan splash jika terjadi error load
+      setTimeout(() => {
+        const still = document.getElementById('loading');
+        if (still) { still.classList.add('fade-out'); setTimeout(()=>still.remove(), 220); }
+      }, 15000);
+    })();
+  </script>
+
+  <link rel="preload" href="flutter_bootstrap.js" as="script" />
+  <script src="flutter_bootstrap.js" defer></script>
+</body>
+</html>
