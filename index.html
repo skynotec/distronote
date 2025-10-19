@@ -14,17 +14,19 @@
     This is a placeholder for base href that will be replaced by the value of
     the `--base-href` argument provided to `flutter build`.
   -->
-  <base href="/web/">
+  <base href="/distronote/">
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="A new Flutter project.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="description" content="DistroNote - Sistem Distribusi Skala Kecil">
+  <meta name="theme-color" content="#0175C2">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="DistroNote">
 
   <!-- iOS meta tags & icons -->
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="DistroNote">
   <link rel="apple-touch-icon" href="assets/icons/distronote_logo.png">
 
   <!-- Favicon -->
@@ -33,6 +35,23 @@
 
   <title>DistroNote</title>
   <link rel="manifest" href="manifest.json">
+  
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('flutter-first-frame', () => {
+        navigator.serviceWorker.register('sw.js')
+          .then((registration) => {
+            console.log('SW registered: ', registration);
+          })
+          .catch((registrationError) => {
+            console.log('SW registration failed: ', registrationError);
+          });
+      });
+    }
+  </script>
+  
+  <!-- Removed external Material Icons webfont to avoid conflict with Flutter's bundled MaterialIcons -->
   <script>
     (function () {
       const isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
@@ -58,8 +77,16 @@
     html, body {
       margin: 0;
       padding: 0;
-      height: 100%;
+      height: 100vh;
+      height: 100dvh; /* Dynamic viewport height for mobile */
       background: #000; /* gunakan warna brand gelap agar tidak ada flash putih */
+      overflow: hidden;
+    }
+    
+    /* Full viewport for PWA */
+    #flutter_target {
+      height: 100vh;
+      height: 100dvh;
     }
 
     /* Splash full-screen */
