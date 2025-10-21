@@ -7959,6 +7959,12 @@ SOFTWARE.
 
 --------------------------------------------------------------------------------
 flutter_lints
+google_identity_services_web
+google_sign_in
+google_sign_in_android
+google_sign_in_ios
+google_sign_in_platform_interface
+google_sign_in_web
 in_app_purchase
 in_app_purchase_platform_interface
 in_app_purchase_storekit
